@@ -10,12 +10,14 @@ except:
 # Global variables
 client_id = "" # Update with your AMP Client ID
 api_key = ""   # Update with your AMP API Key
+session = requests.Session()
+session.auth = (client_id, api_key)
 list_guids = []
 
 # Function definitions
 def get(url):
     try:
-        response = requests.get(url, verify=False)
+        response = session.get(url, verify=False)
         # Consider any status other than 2xx an error
         if not response.status_code // 100 == 2:
             return "Error: Unexpected response {}".format(response)
@@ -29,7 +31,7 @@ def get(url):
 
 def delete(url):
     try:
-        response = requests.delete(url, verify=False)
+        response = session.delete(url, verify=False)
         # Consider any status other than 2xx an error
         if not response.status_code // 100 == 2:
             return "Error: Unexpected response {}".format(response)
@@ -42,7 +44,7 @@ def delete(url):
         return "Error: {}".format(e)
 
 def get_file_list_GUIDs(file_list_type):
-    file_lists_url = "https://{}:{}@api.amp.cisco.com/v1/file_lists/{}".format(client_id,api_key,file_list_type)
+    file_lists_url = "https://api.amp.cisco.com/v1/file_lists/{}".format(file_list_type)
     file_lists = get(file_lists_url)
     #parse through returned lists for their GUIDs and store in a list
     for item in file_lists["data"]:
@@ -51,14 +53,11 @@ def get_file_list_GUIDs(file_list_type):
     print(list_guids)
 
 def delete_files_in_file_list(file_list_guid):
-    # Initialize list that will contain all SHA256s for the file_list
-    sha256_list = []
     # GET the files in the list
-    files_in_list_url = "https://{}:{}@api.amp.cisco.com/v1/file_lists/{}/files".format(client_id,api_key,file_list_guid)
+    files_in_list_url = "https://@api.amp.cisco.com/v1/file_lists/{}/files".format(file_list_guid)
     files_in_list = get(files_in_list_url)
     # Parse through returned data for SHA256s and store in sha256_list
-    for item in files_in_list["data"]["items"]:
-        sha256_list.append(item["sha256"])
+    sha256_list = [item["sha256"] for item in files_in_list["data"]["items"]]
     # DELETE the files
     sha256 = "initialized in def delete_files_in_file_list()" # Initialize this variable first
     for item in sha256_list:
@@ -66,7 +65,7 @@ def delete_files_in_file_list(file_list_guid):
         #print("My client ID is {} and my api key is {}".format(client_id,api_key))
         sha256 = item
         #print("the file SHA256 is {}".format(sha256))
-        delete_files_url = "https://{}:{}@api.amp.cisco.com/v1/file_lists/{}/files/{}".format(client_id,api_key,file_list_guid,sha256) 
+        delete_files_url = "https://@api.amp.cisco.com/v1/file_lists/{}/files/{}".format(file_list_guid,sha256) 
         #print("I'm going to use this URL:{}".format(delete_files_url))
         delete(delete_files_url)
         print("Deleted!")
