@@ -59,17 +59,14 @@ def delete_files_in_file_list(file_list_guid):
     # Parse through returned data for SHA256s and store in sha256_list
     sha256_list = [item["sha256"] for item in files_in_list["data"]["items"]]
     # DELETE the files
-    sha256 = "initialized in def delete_files_in_file_list()" # Initialize this variable first
     for item in sha256_list:
         print("I'm going to delete this file: {}".format(item))
         #print("My client ID is {} and my api key is {}".format(client_id,api_key))
-        sha256 = item
-        #print("the file SHA256 is {}".format(sha256))
-        delete_files_url = "https://@api.amp.cisco.com/v1/file_lists/{}/files/{}".format(file_list_guid,sha256) 
+        #print("the file SHA256 is {}".format(item))
+        delete_files_url = "https://@api.amp.cisco.com/v1/file_lists/{}/files/{}".format(file_list_guid,item) 
         #print("I'm going to use this URL:{}".format(delete_files_url))
         delete(delete_files_url)
         print("Deleted!")
-        sha256 = "re-initialized at the end of the for loop" # Re-initialize this variable
 
 def clear_SCDs():
     get_file_list_GUIDs("simple_custom_detections")
