@@ -56,14 +56,12 @@ def delete_files_in_file_list(file_list_guid):
     # GET the files in the list
     files_in_list_url = "https://@api.amp.cisco.com/v1/file_lists/{}/files".format(file_list_guid)
     files_in_list = get(files_in_list_url)
-    # Parse through returned data for SHA256s and store in sha256_list
-    sha256_list = [item["sha256"] for item in files_in_list["data"]["items"]]
+    #del # Parse through returned data for SHA256s and store in sha256_list
+    #del sha256_list = [item["sha256"] for item in files_in_list["data"]["items"]]
     # DELETE the files
-    for item in sha256_list:
-        print("I'm going to delete this file: {}".format(item))
-        #print("My client ID is {} and my api key is {}".format(client_id,api_key))
-        #print("the file SHA256 is {}".format(item))
-        delete_files_url = "https://@api.amp.cisco.com/v1/file_lists/{}/files/{}".format(file_list_guid,item) 
+    for item in files_in_list["data"]["items"]:
+        print("I'm going to delete this file: {}".format(item["sha256"]))
+        delete_files_url = "https://@api.amp.cisco.com/v1/file_lists/{}/files/{}".format(file_list_guid,item["sha256"]) 
         #print("I'm going to use this URL:{}".format(delete_files_url))
         delete(delete_files_url)
         print("Deleted!")
