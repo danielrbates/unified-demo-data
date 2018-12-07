@@ -1,6 +1,5 @@
 import requests
 import json
-from pprint import pprint
 # Disable SSL Certificate warning
 try:
     requests.packages.urllib3.disable_warnings()
@@ -56,8 +55,6 @@ def delete_files_in_file_list(file_list_guid):
     # GET the files in the list
     files_in_list_url = "https://@api.amp.cisco.com/v1/file_lists/{}/files".format(file_list_guid)
     files_in_list = get(files_in_list_url)
-    #del # Parse through returned data for SHA256s and store in sha256_list
-    #del sha256_list = [item["sha256"] for item in files_in_list["data"]["items"]]
     # DELETE the files
     for item in files_in_list["data"]["items"]:
         print("I'm going to delete this file: {}".format(item["sha256"]))
@@ -69,13 +66,13 @@ def delete_files_in_file_list(file_list_guid):
 def clear_SCDs():
     get_file_list_GUIDs("simple_custom_detections")
     for item in list_guids:
-        print("I'm working with SCD GUID {}".format(item))
+        print("I'm working with Simple Custom Detection list {}.".format(item))
         delete_files_in_file_list(item)
 
 def clear_ABLs():
     get_file_list_GUIDs("application_blocking")
     for item in list_guids:
-        print("I'm working with App Block List GUID {}".format(item))
+        print("I'm working with App Block List {}.".format(item))
         delete_files_in_file_list(item)
 
 # Main function
