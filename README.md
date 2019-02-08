@@ -1,3 +1,3 @@
 # unified-demo-data
 
-Contains scripts and tools for the Unified Demo Data project.
+clear-file-lists.py - used to reinitialize SCDs and ABLs for a given AMP business ID.
